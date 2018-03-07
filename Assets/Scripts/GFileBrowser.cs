@@ -34,13 +34,13 @@ public static class GFileBrowser
     public static class Resources
     {
         public static GameObject fileBrowserPrefab;
-        public static GameObject folderPrefab, filePrefab;
-
-        public static void Load()
-        {
-            filePrefab = UnityEngine.Resources.Load("FileBrowser/FilePanel") as GameObject;
-            folderPrefab = UnityEngine.Resources.Load("FileBrowser/FolderPanel") as GameObject;
+        public static GameObject basePrefab;
+        public static Texture2D fileSprite, folderSprite;
+        public static void Load() {
+            basePrefab = UnityEngine.Resources.Load("FileBrowser/BasePanel") as GameObject;
             fileBrowserPrefab = UnityEngine.Resources.Load("FileBrowser/FileBrowser") as GameObject;
+            fileSprite = UnityEngine.Resources.Load("FileBrowser/file") as Texture2D;
+            folderSprite = UnityEngine.Resources.Load("FileBrowser/folder") as Texture2D;
         }
 
     }
