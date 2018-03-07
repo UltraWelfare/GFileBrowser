@@ -1,15 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 public static class GFileBrowser
 {
     
 
     static MainController Controller;
 
-    public delegate void fileSelected(GFile file);
+    public static Action<GBase> onFileSelected;
 
     static Order order = Order.FirstFolders;
     public static Order FileOrder { get { return order; } set { order = value; } }
-
+    
     public static void Init(GameObject parent)
     {
         Resources.Load();
@@ -27,7 +28,7 @@ public static class GFileBrowser
 
     public static void HideDialog()
     {
-            
+        Controller.Hide();
     }
 
     public enum Order {

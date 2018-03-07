@@ -24,4 +24,8 @@ public class MainController
         fb.SetActive(true);
         br.ReloadBrowser(rootToShow);
     }
+
+    public void Hide(){
+        fb.SetActive(false);
+    }
 }

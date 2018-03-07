@@ -6,8 +6,9 @@ public class GComponent : MonoBehaviour, IPointerClickHandler {
     GBase holder;
     Type t;
     UINavigator ui;
-    
-	public void Load(GBase b, Type t, UINavigator ui) {
+    public GBase Holder { get { return holder; } }
+
+    public void Load(GBase b, Type t, UINavigator ui) {
         this.t = t;
         this.holder = b;
         this.ui = ui;
@@ -16,11 +17,11 @@ public class GComponent : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ui.onBasePanelClick(holder, t);
+        ui.onBasePanelClick(this, t);
     }
 
     public void ReloadUI(bool reloadText = true, bool reloadTexture = true) {
-        if(reloadText) { GetComponentInChildren<Text>().text = holder.Name; }
+        if(reloadText) { GetComponentInChildren<Text>().text = Holder.Name; }
         if(reloadTexture) {
             if(t == Type.File) {
                 GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.fileSprite;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UINavigator
 {
@@ -8,6 +9,8 @@ public class UINavigator
     Button backButton, doneButton, redirectButton;
     InputField pathField;
     Browser br;
+    Color32 selectedColor = new Color32(0,0,255,100);
+    Color32 normalColor = new Color32(255,255,255,100);
 
     public UINavigator(GameObject fileBrowserRoot) {
         this.fb = fileBrowserRoot;
@@ -31,7 +34,15 @@ public class UINavigator
         doneButton.GetComponent<Button>().onClick.AddListener(onDone);
         redirectButton.GetComponent<Button>().onClick.AddListener(onRedirect);  
     }
-
+    //----UI Responses----//
+    void setSelected(GComponent gComponent, bool selected){
+        if(selected){
+            
+            gComponent.gameObject.GetComponent<Image>().color = selectedColor;
+        } else {
+            gComponent.gameObject.GetComponent<Image>().color = normalColor;
+        }
+    }
     //----Button Calls----//
 
     void onBack() {
@@ -39,7 +50,8 @@ public class UINavigator
     }
     
     void onDone() {
-
+        GFileBrowser.onFileSelected(br.CurrentSelectedFile);
+        GFileBrowser.HideDialog();
     }
 
     void onRedirect() {
@@ -48,9 +60,24 @@ public class UINavigator
 
     //----Other UI Calls----//
 
-    public void onBasePanelClick(GBase f, GComponent.Type t) {
+    public void onBasePanelClick(GComponent g, GComponent.Type t) {
         if(t == GComponent.Type.Folder){
-            br.ReloadBrowser(f.Path);
+            br.ReloadBrowser(g.Holder.Path);
+        } else {
+            if(g.Holder.Equals(br.CurrentSelectedFile)){
+                setSelected(g, false);
+                br.CurrentSelectedFile = null;
+            } else {
+                br.components.ForEach(c => {
+                    if(!c.Equals(g)){
+                        setSelected(c, false);
+                    } else {
+                        setSelected(c, true);
+                        br.CurrentSelectedFile = (GFile)c.Holder;
+                    }
+                 });
+
+            }
         }
     }
 }

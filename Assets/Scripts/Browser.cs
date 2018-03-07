@@ -6,6 +6,8 @@ public class Browser
     Transform fileScrollView;
     UINavigator ui;
     List<string> stack = new List<string>();
+    public List<GComponent> components = new List<GComponent>();
+    public GBase CurrentSelectedFile;
     public Browser(Transform fileScrollView, UINavigator ui) {
         this.fileScrollView = fileScrollView;
         this.ui = ui;
@@ -18,10 +20,10 @@ public class Browser
         ReloadBrowser(stack[stack.Count - 2], false);
         stack.RemoveAt(stack.Count - 1);
     }
-
     public void ReloadBrowser(string path, bool addToStack = true) {
         if(addToStack) { stack.Add(path); }
         ui.UpdatePathField(path);
+        CurrentSelectedFile = null;
         ClearBrowser();
         List<GBase> files = EnvGrabber.returnFiles(path);
         List<GBase> folders = EnvGrabber.returnFolders(path);
@@ -43,6 +45,7 @@ public class Browser
     {
         for(int i = 0; i < fileScrollView.childCount; i++){
             Transform item = fileScrollView.GetChild(i);
+            components.Remove(item.GetComponent<GComponent>());
             UnityEngine.GameObject.Destroy(item.gameObject);
         }
     }
@@ -55,6 +58,7 @@ public class Browser
             GComponent.Type t;
             if(item.GetType() == typeof(GFile)) {t = GComponent.Type.File; } else { t = GComponent.Type.Folder; } 
             f.GetComponent<GComponent>().Load(item, t, ui);
+            components.Add(f.GetComponent<GComponent>());
             
         });
 
