@@ -1,13 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-public class GComponent : MonoBehaviour {
+using UnityEngine.EventSystems;
+public class GComponent : MonoBehaviour, IPointerClickHandler {
 
     GBase holder;
     Type t;
-	public void Load(GBase b, Type t) {
+    UINavigator ui;
+    
+	public void Load(GBase b, Type t, UINavigator ui) {
         this.t = t;
         this.holder = b;
+        this.ui = ui;
         ReloadUI();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        ui.onBasePanelClick(holder, t);
     }
 
     public void ReloadUI(bool reloadText = true, bool reloadTexture = true) {
@@ -15,13 +24,12 @@ public class GComponent : MonoBehaviour {
         if(reloadTexture) {
             if(t == Type.File) {
                 GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.fileSprite;
-                Debug.Log("asd");
             } else {
                 GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.folderSprite;
             }
          }
     }
-    
+
     public enum Type {
         File,
         Folder

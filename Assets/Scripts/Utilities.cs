@@ -5,8 +5,12 @@ public static class Utilities
 {
     public static string splitNamePath(string path)
     {
-        int pos = path.LastIndexOf("/") + 1;
-
+        int pos;
+        if(path.Contains("\\")){
+            pos = path.LastIndexOf("\\") + 1;
+        } else {
+            pos = path.LastIndexOf("/") + 1;
+        }
         return path.Substring(pos, path.Length - pos); 
     }
 
