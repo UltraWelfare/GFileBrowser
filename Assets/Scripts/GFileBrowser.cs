@@ -16,9 +16,13 @@ public static class GFileBrowser
         Controller = new MainController(parent);
     }
 
-    public static void ShowDialog()
+    public static void Navigate(string Path){
+        Controller.CBrowser.ReloadBrowser(Path);
+    }
+
+    public static void ShowDialog(string Path)
     {
-        Controller.Show();
+        Controller.Show(Path);
     }
 
     public static void HideDialog()

@@ -8,7 +8,8 @@ public class TEST : MonoBehaviour
     {
 
         GFileBrowser.Init(canv);
-        GFileBrowser.ShowDialog();
+        GFileBrowser.ShowDialog("F:/");
+        GFileBrowser.Navigate("C:/");
     }
 
     // Update is called once per frame

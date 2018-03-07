@@ -6,7 +6,6 @@ public class Browser
     Transform fileScrollView;
     UINavigator ui;
     List<string> stack = new List<string>();
-
     public Browser(Transform fileScrollView, UINavigator ui) {
         this.fileScrollView = fileScrollView;
         this.ui = ui;
@@ -22,6 +21,7 @@ public class Browser
 
     public void ReloadBrowser(string path, bool addToStack = true) {
         if(addToStack) { stack.Add(path); }
+        ui.UpdatePathField(path);
         ClearBrowser();
         List<GBase> files = EnvGrabber.returnFiles(path);
         List<GBase> folders = EnvGrabber.returnFolders(path);

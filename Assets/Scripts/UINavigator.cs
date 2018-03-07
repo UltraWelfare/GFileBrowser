@@ -20,6 +20,9 @@ public class UINavigator
         setupButtons();
     }
 
+    public void UpdatePathField(string path){
+        pathField.text = path;
+    }
     void setupButtons() {
         backButton = fb.transform.Find("BackButton").GetComponent<Button>();
         doneButton = fb.transform.Find("DoneButton").GetComponent<Button>();
@@ -41,12 +44,11 @@ public class UINavigator
 
     void onRedirect() {
         br.ReloadBrowser(pathField.text, true);
-        
     }
 
     //----Other UI Calls----//
 
-    public void onBasePanelClick(GBase f, GComponent.Type t){
+    public void onBasePanelClick(GBase f, GComponent.Type t) {
         if(t == GComponent.Type.Folder){
             br.ReloadBrowser(f.Path);
         }

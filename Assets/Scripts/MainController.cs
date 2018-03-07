@@ -3,9 +3,11 @@ using System.Collections.Generic;
 public class MainController
 {
     Browser br;
+    
     UINavigator ui;
     public GameObject fb;
     public GameObject fileScrollView;
+    public Browser CBrowser { get { return br; } }
 
     public MainController(GameObject parent)
     {
@@ -17,9 +19,9 @@ public class MainController
         ui.InitCalls(br);
     }
 
-    public void Show()
+    public void Show(string rootToShow)
     {
         fb.SetActive(true);
-        br.ReloadBrowser("D:/");
+        br.ReloadBrowser(rootToShow);
     }
 }
