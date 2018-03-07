@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 public static class Utilities
 {
@@ -9,5 +9,11 @@ public static class Utilities
 
         return path.Substring(pos, path.Length - pos); 
     }
+
+    public static List<string> orderAlphabetically(this List<string> ls)
+    {
+        return ls.OrderBy(str => str).ToList();
+    }
+   
 }
 

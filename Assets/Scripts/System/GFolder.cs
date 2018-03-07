@@ -1,19 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class GFolder
+﻿public class GFolder : GBase
 {
-
-    private string path;
-    private string name;
-
-    public string Name { get { return name; } }
-
-    public GFolder(string path)
-    {
-        this.path = path;
-        name = Utilities.splitNamePath(this.path);
-    }
-
-
+    public GFolder(string path) : base(path) { }
 }

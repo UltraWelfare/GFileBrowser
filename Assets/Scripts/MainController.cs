@@ -2,32 +2,22 @@
 using System.Collections.Generic;
 public class MainController
 {
-    Instantiator inst;
-        
-    public void Wake(GameObject g)
+    Browser br;
+    public GameObject fb;
+    public GameObject fileScrollView;
+
+    public MainController(GameObject parent)
     {
-        inst = new Instantiator(g);
+        fb = GameObject.Instantiate(GFileBrowser.Resources.fileBrowserPrefab, parent.transform, false);
+        var fileScrollView = fb.transform.Find("FileScrollView").Find("Viewport").Find("Content").gameObject;
+        fb.SetActive(false);
+
+        br = new Browser(fileScrollView.transform);
     }
 
     public void Show()
     {
-        inst.fb.SetActive(true);
-        reloadBrowser("F:/");
-    }
-
-    public void reloadBrowser(string path)
-    {
-        List<string> files = EnvGrabber.returnFiles(path);
-        List<string> folders = EnvGrabber.returnFolders(path);
-
-        foreach(string f in files)
-        {
-            inst.File(new GFile(f));
-        }
-
-        foreach (string f in folders)
-        {
-            inst.Folder(new GFolder(f));
-        }
+        fb.SetActive(true);
+        br.reloadBrowser("D:/");
     }
 }

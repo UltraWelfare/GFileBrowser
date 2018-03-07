@@ -1,18 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-public class GFile
+﻿public class GFile : GBase
 {
-
-    private string path;
-    private string name;
-
-    public string Name { get { return name; } }
-
-    public GFile(string path)
-    {
-        this.path = path;
-        name = Utilities.splitNamePath(this.path);
-    }
-
+    public GFile(string path) : base(path) { }
 }
 
