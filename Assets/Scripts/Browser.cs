@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
+
 public class Browser
 {
     Transform fileScrollView;
@@ -21,24 +23,31 @@ public class Browser
         stack.RemoveAt(stack.Count - 1);
     }
     public void ReloadBrowser(string path, bool addToStack = true) {
-        if(addToStack) { stack.Add(path); }
-        ui.UpdatePathField(path);
-        CurrentSelectedFile = null;
-        ClearBrowser();
-        List<GBase> files = EnvGrabber.returnFiles(path);
-        List<GBase> folders = EnvGrabber.returnFolders(path);
-
-        switch (GFileBrowser.FileOrder)
-        {
-            case GFileBrowser.Order.FirstFiles:
-                inst(files);
-                inst(folders);
-                break;
-            case GFileBrowser.Order.FirstFolders:
-                inst(folders);
-                inst(files);
-                break;
-        }
+        
+        try {
+            List<GBase> files = EnvGrabber.returnFiles(path);
+			List<GBase> folders = EnvGrabber.returnFolders(path);
+			if(addToStack) { stack.Add(path); }
+        	ui.UpdatePathField(path);
+        	CurrentSelectedFile = null;
+        	ClearBrowser();
+			switch (GFileBrowser.FileOrder)
+			{
+				case GFileBrowser.Order.FirstFiles:
+					inst(files);
+					inst(folders);
+					break;
+				case GFileBrowser.Order.FirstFolders:
+					inst(folders);
+					inst(files);
+					break;
+			}
+			var rt = fileScrollView.GetComponent<RectTransform>();
+			rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(files.Count + folders.Count));
+        } catch (Exception e){
+			ui.displayError(e.ToString());
+		}
+        
     }
 
     public void ClearBrowser()

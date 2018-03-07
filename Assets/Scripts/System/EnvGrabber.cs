@@ -24,4 +24,14 @@ public static class EnvGrabber
         }
         return res;
     }
+
+    public static List<GBase> returnDrives(){
+        List<GBase> res = new List<GBase>();
+
+        foreach (string f in Directory.GetLogicalDrives())
+        {
+            res.Add(new GDrive(f));
+        }
+        return res;
+    }
 }

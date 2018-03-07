@@ -15,8 +15,7 @@ public class GComponent : MonoBehaviour, IPointerClickHandler {
         ReloadUI();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
+    public void OnPointerClick(PointerEventData eventData) {
         ui.onBasePanelClick(this, t);
     }
 

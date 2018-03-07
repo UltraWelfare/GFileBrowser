@@ -11,16 +11,20 @@ public class UINavigator
     Browser br;
     Color32 selectedColor = new Color32(0,0,255,100);
     Color32 normalColor = new Color32(255,255,255,100);
-
+    Text errorDisplayText;
     public UINavigator(GameObject fileBrowserRoot) {
         this.fb = fileBrowserRoot;
         pathField = fb.transform.Find("PathField").GetComponent<InputField>();
-        
+        errorDisplayText = fb.transform.Find("ErrorDisplayText").GetComponent<Text>();
     }
     
     public void InitCalls(Browser br) {
         this.br = br;
         setupButtons();
+    }
+
+    public void displayError(string error){
+        errorDisplayText.text = error;
     }
 
     public void UpdatePathField(string path){
