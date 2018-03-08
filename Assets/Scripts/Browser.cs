@@ -3,73 +3,95 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-public class Browser
-{
-    Transform fileScrollView;
+public class Browser {
+    Transform fileScrollView, driveScrollView;
     UINavigator ui;
     List<string> stack = new List<string>();
     public List<GComponent> components = new List<GComponent>();
     public GBase CurrentSelectedFile;
-    public Browser(Transform fileScrollView, UINavigator ui) {
+
+    public Browser(Transform fileScrollView, Transform driveScrollView, UINavigator ui) {
         this.fileScrollView = fileScrollView;
+        this.driveScrollView = driveScrollView;
         this.ui = ui;
     }
 
-    public void GoBack(){
-        if(stack.Count < 2){
-            return;
-        }
-        ReloadBrowser(stack[stack.Count - 2], false);
-        stack.RemoveAt(stack.Count - 1);
-    }
-    public void ReloadBrowser(string path, bool addToStack = true) {
-        
+    public void ReloadDriveBrowser() {
         try {
-            List<GBase> files = EnvGrabber.returnFiles(path);
-			List<GBase> folders = EnvGrabber.returnFolders(path);
-			if(addToStack) { stack.Add(path); }
-        	ui.UpdatePathField(path);
-        	CurrentSelectedFile = null;
-        	ClearBrowser();
-			switch (GFileBrowser.FileOrder)
-			{
-				case GFileBrowser.Order.FirstFiles:
-					inst(files);
-					inst(folders);
-					break;
-				case GFileBrowser.Order.FirstFolders:
-					inst(folders);
-					inst(files);
-					break;
-			}
-			var rt = fileScrollView.GetComponent<RectTransform>();
-			rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(files.Count + folders.Count));
-        } catch (Exception e){
-			ui.displayError(e.ToString());
-		}
-        
+            List<GBase> drives = EnvGrabber.returnDrives();
+            ClearBrowser(driveScrollView);
+            inst(drives, driveScrollView);
+            var rt = driveScrollView.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(drives.Count));
+        } catch (Exception e) {
+            ui.displayError(e.ToString());
+        }
     }
 
-    public void ClearBrowser()
-    {
-        for(int i = 0; i < fileScrollView.childCount; i++){
-            Transform item = fileScrollView.GetChild(i);
+    public void ReloadFileBrowser(string path, bool addToStack = true) {
+
+        try {
+            List<GBase> files = EnvGrabber.returnFiles(path);
+            List<GBase> folders = EnvGrabber.returnFolders(path);
+            if (addToStack) { stack.Add(path); }
+            ui.UpdatePathField(path);
+            CurrentSelectedFile = null;
+            ClearBrowser(fileScrollView);
+            switch (GFileBrowser.FileOrder) {
+                case GFileBrowser.Order.FirstFiles:
+                    inst(files, fileScrollView);
+                    inst(folders, fileScrollView);
+                    break;
+                case GFileBrowser.Order.FirstFolders:
+                    inst(folders, fileScrollView);
+                    inst(files, fileScrollView);
+                    break;
+            }
+            var rt = fileScrollView.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(files.Count + folders.Count));
+        } catch (Exception e) {
+            ui.displayError(e.ToString());
+        }
+
+    }
+
+    public void GoBack() {
+        if (stack.Count < 2) {
+            return;
+        }
+        ReloadFileBrowser(stack[stack.Count - 2], false);
+        stack.RemoveAt(stack.Count - 1);
+    }
+
+    public void ClearBrowser(Transform root) {
+        for (int i = 0; i < root.childCount; i++) {
+            Transform item = root.GetChild(i);
             components.Remove(item.GetComponent<GComponent>());
             UnityEngine.GameObject.Destroy(item.gameObject);
         }
     }
 
-    void inst(List<GBase> ls) {
+    void inst(List<GBase> ls, Transform root) {
         var newls = ls.OrderBy(item => item.Name).ToList();
-        newls.ForEach(item =>
-        {
-            GameObject f = GameObject.Instantiate(GFileBrowser.Resources.basePrefab, fileScrollView.transform, false);
-            GComponent.Type t;
-            if(item.GetType() == typeof(GFile)) {t = GComponent.Type.File; } else { t = GComponent.Type.Folder; } 
+        newls.ForEach(item => {
+            GameObject f = GameObject.Instantiate(GFileBrowser.Resources.basePrefab, root, false);
+            GComponent.Type t = GBasetoGType(item);
             f.GetComponent<GComponent>().Load(item, t, ui);
             components.Add(f.GetComponent<GComponent>());
-            
+
         });
 
+    }
+
+    public static GComponent.Type GBasetoGType(GBase item) {
+        if (item.GetType() == typeof(GFile)) {
+            return GComponent.Type.File;
+        } else if (item.GetType() == typeof(GFolder)) {
+            return GComponent.Type.Folder;
+        } else if (item.GetType() == typeof(GDrive)) {
+            return GComponent.Type.Drive;
+        }
+
+        return GComponent.Type.Null;
     }
 }

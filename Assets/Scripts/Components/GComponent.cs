@@ -20,18 +20,29 @@ public class GComponent : MonoBehaviour, IPointerClickHandler {
     }
 
     public void ReloadUI(bool reloadText = true, bool reloadTexture = true) {
-        if(reloadText) { GetComponentInChildren<Text>().text = Holder.Name; }
-        if(reloadTexture) {
-            if(t == Type.File) {
-                GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.fileSprite;
+        if (reloadText) {
+            if (t == Type.Drive) {
+                GetComponentInChildren<Text>().text = Holder.Path;
             } else {
-                GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.folderSprite;
+                GetComponentInChildren<Text>().text = Holder.Name;
             }
-         }
+        }
+
+        if (reloadTexture) {
+            if (t == Type.File) {
+                GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.fileTexture;
+            } else if (t == Type.Folder) {
+                GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.folderTexture;
+            } else if (t == Type.Drive) {
+                GetComponentInChildren<RawImage>().texture = GFileBrowser.Resources.driveTexture;
+            }
+        }
     }
 
     public enum Type {
         File,
-        Folder
+        Folder,
+        Drive,
+        Null
     }
 }
