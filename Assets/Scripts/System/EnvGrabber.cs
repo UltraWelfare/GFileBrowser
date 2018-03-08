@@ -6,7 +6,7 @@ public static class EnvGrabber {
         List<GBase> res = new List<GBase>();
 
         foreach (string f in Directory.GetFiles(path)) {
-            res.Add(new GFile(f));
+            res.Add(new GFile(f.fixSlashes()));
         }
         return res;
     }
@@ -15,7 +15,7 @@ public static class EnvGrabber {
         List<GBase> res = new List<GBase>();
 
         foreach (string f in Directory.GetDirectories(path)) {
-            res.Add(new GFolder(f));
+            res.Add(new GFolder(f.fixSlashes()));
         }
         return res;
     }
@@ -27,5 +27,9 @@ public static class EnvGrabber {
             res.Add(new GDrive(f));
         }
         return res;
+    }
+
+    public static string fixSlashes(this string str){
+        return str.Replace("\\", "/");
     }
 }
