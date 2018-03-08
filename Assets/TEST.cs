@@ -8,8 +8,7 @@ public class TEST : MonoBehaviour
     {
 
         GFileBrowser.Init(canv);
-        GFileBrowser.ShowDialog("F:/");
-        GFileBrowser.Navigate("C:/");
+        GFileBrowser.ShowDialog("C:/");
         GFileBrowser.onFileSelected = onFile;
     }
     

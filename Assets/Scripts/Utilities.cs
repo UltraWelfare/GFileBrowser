@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System;
 
 public static class Utilities {
     public static readonly float panelHeight = 35.9f;
     public static readonly float spacingY = 2.03f;
 
     public static float calculateHeight(int count) {
-        return (panelHeight + spacingY) * 2 * count;
+        return (panelHeight + spacingY) * count;
     }
 
     public static string splitNamePath(string path) {
@@ -18,5 +19,8 @@ public static class Utilities {
         return ls.OrderBy(str => str).ToList();
     }
 
+    public static string fixSlashes(this string str) {
+        return str.Replace("\\", "/");
+    }
 }
 

@@ -1,35 +1,39 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System;
 
 public static class EnvGrabber {
+
+
     public static List<GBase> returnFiles(string path) {
         List<GBase> res = new List<GBase>();
-
-        foreach (string f in Directory.GetFiles(path)) {
-            res.Add(new GFile(f.fixSlashes()));
-        }
-        return res;
+        Array.ForEach(Directory.GetFiles(path), (string str) => { res.Add(new GFile(str.fixSlashes())); });
+        return filter(res);
     }
 
     public static List<GBase> returnFolders(string path) {
         List<GBase> res = new List<GBase>();
-
-        foreach (string f in Directory.GetDirectories(path)) {
-            res.Add(new GFolder(f.fixSlashes()));
-        }
-        return res;
+        Array.ForEach(Directory.GetDirectories(path), (string str) => { res.Add(new GFolder(str.fixSlashes())); });
+        return filter(res);
     }
 
     public static List<GBase> returnDrives() {
         List<GBase> res = new List<GBase>();
-
-        foreach (string f in Directory.GetLogicalDrives()) {
-            res.Add(new GDrive(f));
-        }
-        return res;
+        Array.ForEach(Directory.GetLogicalDrives(), (string str) => { res.Add(new GDrive(str)); });
+        return filter(res);
     }
 
-    public static string fixSlashes(this string str){
-        return str.Replace("\\", "/");
+    private static List<GBase> filter(List<GBase> list) {
+        List<GBase> newList = new List<GBase>();
+        
+        list.ForEach(item => { newList.Add(item); });
+
+        list.ForEach(item => {
+            if(GFileBrowser.IgnoreList.Contains(item.Name)){
+                newList.Remove(item);
+            }
+        });
+        
+        return newList;
     }
 }

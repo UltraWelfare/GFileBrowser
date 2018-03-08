@@ -29,7 +29,6 @@ public class Browser {
     }
 
     public void ReloadFileBrowser(string path, bool addToStack = true) {
-
         try {
             List<GBase> files = EnvGrabber.returnFiles(path);
             List<GBase> folders = EnvGrabber.returnFolders(path);

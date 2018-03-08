@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 public static class GFileBrowser {
-
 
     static MainController Controller;
 
@@ -10,11 +10,20 @@ public static class GFileBrowser {
     static Order order = Order.FirstFolders;
     public static Order FileOrder { get { return order; } set { order = value; } }
 
+    static List<string> ignoreList = new List<string>()
+    { "hiberfil.sys", "System Volume Information", "Recovery", "ProgramData", "bootmgr", "BOOTNXT",
+      "BOOTSECT.BAK", "Boot", "pagefile.sys", "setup.log", "swapfile.sys", "$RECYCLE.BIN" };
+    public static List<string> IgnoreList { get { return ignoreList; } }
+
     public static void Init(GameObject parent) {
         Resources.Load();
         Controller = new MainController(parent);
     }
 
+    public static void AddToIgnore(string Name) {
+        ignoreList.Add(Name);
+    }
+    
     public static void Navigate(string Path) {
         Controller.CBrowser.ReloadFileBrowser(Path);
     }
