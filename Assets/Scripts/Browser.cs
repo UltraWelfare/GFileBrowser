@@ -24,7 +24,7 @@ public class Browser {
             var rt = driveScrollView.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(drives.Count));
         } catch (Exception e) {
-            ui.displayError(e.ToString());
+            ui.DisplayError(e);
         }
     }
 
@@ -49,7 +49,7 @@ public class Browser {
             var rt = fileScrollView.GetComponent<RectTransform>();
             rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(files.Count + folders.Count));
         } catch (Exception e) {
-            ui.displayError(e.ToString());
+            ui.DisplayError(e);
         }
 
     }
@@ -74,23 +74,9 @@ public class Browser {
         var newls = ls.OrderBy(item => item.Name).ToList();
         newls.ForEach(item => {
             GameObject f = GameObject.Instantiate(GFileBrowser.Resources.basePrefab, root, false);
-            GComponent.Type t = GBasetoGType(item);
-            f.GetComponent<GComponent>().Load(item, t, ui);
+            f.GetComponent<GComponent>().Load(item, ui);
             components.Add(f.GetComponent<GComponent>());
 
         });
-
-    }
-
-    public static GComponent.Type GBasetoGType(GBase item) {
-        if (item.GetType() == typeof(GFile)) {
-            return GComponent.Type.File;
-        } else if (item.GetType() == typeof(GFolder)) {
-            return GComponent.Type.Folder;
-        } else if (item.GetType() == typeof(GDrive)) {
-            return GComponent.Type.Drive;
-        }
-
-        return GComponent.Type.Null;
     }
 }

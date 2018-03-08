@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 public class UINavigator {
     GameObject fb;
@@ -12,24 +13,39 @@ public class UINavigator {
     Color32 selectedColor = new Color32(0, 0, 255, 100);
     Color32 normalColor = new Color32(255, 255, 255, 100);
     Text errorDisplayText;
+
     public UINavigator(GameObject fileBrowserRoot) {
         this.fb = fileBrowserRoot;
         pathField = fb.transform.Find("PathField").GetComponent<InputField>();
         errorDisplayText = fb.transform.Find("ErrorDisplayText").GetComponent<Text>();
-    }
-
-    public void InitCalls(Browser br) {
-        this.br = br;
         setupButtons();
     }
 
-    public void displayError(string error) {
-        errorDisplayText.text = error;
+    public void PassBrowser(Browser browser) {
+        this.br = browser;
+
+    }
+
+    public void DisplayError(Exception e) {
+        string tmp = "Unknown error : " + e.ToString();
+        if (e is DirectoryNotFoundException) {
+            tmp = "Path not found";
+        } else if (e is UnauthorizedAccessException) {
+            tmp = "You don't have permission to access this folder";
+        } else if (e is ArgumentException) {
+            tmp = "Path contains invalid characters";
+        } else if (e is ArgumentNullException) {
+            tmp = "Path is invalid (maybe empty?)";
+        } else if (e is PathTooLongException) {
+            tmp = "Path has exceed the system-defined maximum length";
+        }
+        errorDisplayText.text = tmp;
     }
 
     public void UpdatePathField(string path) {
         pathField.text = path;
     }
+
     void setupButtons() {
         backButton = fb.transform.Find("BackButton").GetComponent<Button>();
         doneButton = fb.transform.Find("DoneButton").GetComponent<Button>();
@@ -38,15 +54,17 @@ public class UINavigator {
         doneButton.GetComponent<Button>().onClick.AddListener(onDone);
         redirectButton.GetComponent<Button>().onClick.AddListener(onRedirect);
     }
+
     //----UI Responses----//
+
     void setSelected(GComponent gComponent, bool selected) {
         if (selected) {
-
             gComponent.gameObject.GetComponent<Image>().color = selectedColor;
         } else {
             gComponent.gameObject.GetComponent<Image>().color = normalColor;
         }
     }
+
     //----Button Calls----//
 
     void onBack() {
@@ -64,12 +82,12 @@ public class UINavigator {
 
     //----Other UI Calls----//
 
-    public void onBasePanelClick(GComponent g, GComponent.Type t) {
-        if (t == GComponent.Type.Folder) {
+    public void onBasePanelClick(GComponent g) {
+        if (g.Type == typeof(GFolder)) {
             onFolderClicked(g);
-        } else if (t == GComponent.Type.File) {
+        } else if (g.Type == typeof(GFile)) {
             onFileClicked(g);
-        } else if (t == GComponent.Type.Drive) {
+        } else if (g.Type == typeof(GDrive)) {
             onDriveClicked(g);
         }
     }
