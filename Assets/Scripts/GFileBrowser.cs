@@ -41,7 +41,7 @@ public static class GFileBrowser {
     /// Navigates the browser to a path
     /// </summary>
     public static void Navigate(string Path) {
-        Controller.CBrowser.ReloadFileBrowser(Path);
+        Controller.BRF.Reload(Path);
     }
 
     /// <summary>

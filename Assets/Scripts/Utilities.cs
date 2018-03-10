@@ -7,7 +7,7 @@ public static class Utilities {
     public static readonly float spacingY = 2.03f;
 
     /// <summary>
-    /// Used to caalculate the height of the scrollview depending on the prefab measurements.
+    /// Used to calculate the height of the scrollview depending on the prefab measurements.
     /// </summary>
     public static float calculateHeight(int count) {
         return (panelHeight + spacingY) * count;
@@ -29,7 +29,7 @@ public static class Utilities {
     }
 
     /// <summary>
-    /// Replaces all backslashes with front slashes.
+    /// Replaces all backslashes with frontslashes.
     /// </summary>
     public static string fixSlashes(this string str) {
         return str.Replace("\\", "/");

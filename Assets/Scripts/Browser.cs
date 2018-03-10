@@ -1,82 +1,60 @@
-﻿using System.Collections.Generic;
+
 using UnityEngine;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public class Browser {
-    Transform fileScrollView, driveScrollView;
-    UINavigator ui;
-    List<string> stack = new List<string>();
-    public List<GComponent> components = new List<GComponent>();
-    public GBase CurrentSelectedFile;
+/// <summary>
+/// The abstract class Browser that updates contents on views.
+/// </summary>
+public abstract class Browser {
+    GameObject prefab;
+    RectTransform rectTransform;
+    protected UINavigator ui;
+    protected Transform contentView;
 
-    public Browser(Transform fileScrollView, Transform driveScrollView, UINavigator ui) {
-        this.fileScrollView = fileScrollView;
-        this.driveScrollView = driveScrollView;
+    public Browser(Transform contentView, GameObject prefab, UINavigator ui) {
+        this.contentView = contentView;
+        rectTransform = this.contentView.GetComponent<RectTransform>();
         this.ui = ui;
     }
 
-    public void ReloadDriveBrowser() {
-        try {
-            List<GBase> drives = EnvGrabber.returnDrives();
-            ClearBrowser(driveScrollView);
-            inst(drives, driveScrollView);
-            var rt = driveScrollView.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(drives.Count));
-        } catch (Exception e) {
-            ui.DisplayError(e);
-        }
-    }
+    /// <summary>
+    /// Reloads the contents. At least one function should be implemented.
+    /// </summary>
+    public abstract void Reload();
+    public virtual void Reload(string path) { throw new NotSupportedException(); }
+    public virtual void Reload(string path, bool addToStack) { throw new NotSupportedException(); }
 
-    public void ReloadFileBrowser(string path, bool addToStack = true) {
-        try {
-            List<GBase> files = EnvGrabber.returnFiles(path);
-            List<GBase> folders = EnvGrabber.returnFolders(path);
-            if (addToStack) { stack.Add(path); }
-            ui.UpdatePathField(path);
-            CurrentSelectedFile = null;
-            ClearBrowser(fileScrollView);
-            switch (GFileBrowser.FileOrder) {
-                case GFileBrowser.Order.FirstFiles:
-                    inst(files, fileScrollView);
-                    inst(folders, fileScrollView);
-                    break;
-                case GFileBrowser.Order.FirstFolders:
-                    inst(folders, fileScrollView);
-                    inst(files, fileScrollView);
-                    break;
-            }
-            var rt = fileScrollView.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(rt.sizeDelta.x, Utilities.calculateHeight(files.Count + folders.Count));
-        } catch (Exception e) {
-            ui.DisplayError(e);
-        }
-
-    }
-
-    public void GoBack() {
-        if (stack.Count < 2) {
-            return;
-        }
-        ReloadFileBrowser(stack[stack.Count - 2], false);
-        stack.RemoveAt(stack.Count - 1);
-    }
-
-    public void ClearBrowser(Transform root) {
-        for (int i = 0; i < root.childCount; i++) {
-            Transform item = root.GetChild(i);
-            components.Remove(item.GetComponent<GComponent>());
+    /// <summary>
+    /// Destroys all the objects inside the content view.
+    /// You can optionally pass a function that will give you in each iteration of the deletion, 
+    /// the item that is going to be deleted.
+    /// </summary>
+    public void Clear(Action<Transform> fun = null) {
+        for (int i = 0; i < contentView.childCount; i++) {
+            Transform item = contentView.GetChild(i);
+            if (fun != null) { fun(item); }
             UnityEngine.GameObject.Destroy(item.gameObject);
         }
     }
 
-    void inst(List<GBase> ls, Transform root) {
+    /// <summary>
+    /// Calculates the new content size and updates the rect transform for the correct height.
+    /// </summary>
+    protected void recalculateContentSize(int count) {
+        rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, Utilities.calculateHeight(count));
+    }
+
+    /// <summary>
+    /// Instantiates GBase objects inside the content view.
+    /// You can optionally pass a function that will give you the GBase and the GameObject that is created (after each iteration).
+    /// </summary>
+    protected void inst(List<GBase> ls, Action<GBase, GameObject> fun = null) {
         var newls = ls.OrderBy(item => item.Name).ToList();
         newls.ForEach(item => {
-            GameObject f = GameObject.Instantiate(GFileBrowser.Resources.basePrefab, root, false);
-            f.GetComponent<GComponent>().Load(item, ui);
-            components.Add(f.GetComponent<GComponent>());
-
+            GameObject f = GameObject.Instantiate(GFileBrowser.Resources.basePrefab, contentView, false);
+            if (fun != null) { fun(item, f); }
         });
     }
 }
