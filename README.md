@@ -7,15 +7,16 @@ Clone the repository and take a look at the example project.
 The most important part of the filebrowser is Resources/FileBrowser (Contains the prefabs and the textures) and the Scripts folder, so you might as well copy them to your current project and use them accordingly :)
 
 # Usage
-1. Create a MonoBehaviour script and call ```GFileBrowser.Init(gameobject)``` where the gameobject should be your Canvas (or some child of your Canvas).
-2. Create a callback function like this : 
+1. Add ```using GFB;``` at the top of your script.
+2. Create a MonoBehaviour script and call ```GFileBrowser.Init(gameobject)``` where the gameobject should be your Canvas (or some child of your Canvas).
+3. Create a callback function like this : 
 ```
 void onFileSelected(GBase file) {
        // Do stuff here with file.Name and file.Path  
 }
 ```
-3. Assign the callback function to the GFileBrowser with ```GFileBrowser.onFileSelected = onFileSelected;```
-4. Show the dialog with ```GFileBrowser.ShowDialog(root)``` where root is a string that indicates the first path that the user will see when the dialog shows up.
+4. Assign the callback function to the GFileBrowser with ```GFileBrowser.onFileSelected = onFileSelected;```
+5. Show the dialog with ```GFileBrowser.ShowDialog(root)``` where root is a string that indicates the first path that the user will see when the dialog shows up.
 A good default value could be "C:\\".
 
 GFileBrowser contains also some extra functions that might be useful to you such as

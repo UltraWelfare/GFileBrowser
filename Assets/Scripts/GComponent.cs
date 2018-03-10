@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
+using GFB;
 public class GComponent : MonoBehaviour, IPointerClickHandler {
 
     GBase holder;

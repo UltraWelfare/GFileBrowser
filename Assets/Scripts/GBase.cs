@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class GBase {
-    string path, name;
+namespace GFB {
+    public abstract class GBase {
+        string path, name;
 
-    public string Name { get { return name; } }
-    public string Path { get { return path; } }
+        public string Name { get { return name; } }
+        public string Path { get { return path; } }
 
-    /// <summary>
-    /// GBase is the abstract class for GFile, GFolder, GDrive.
-    /// Constructor gets a paramater p, which is the path.
-    /// Note : The name of the file will be automatically extracted.
-    /// </summary>
-    public GBase(string p) {
-        this.path = p;
-        name = Utilities.splitNamePath(this.path);
+        /// <summary>
+        /// GBase is the abstract class for GFile, GFolder, GDrive.
+        /// Constructor gets a paramater p, which is the path.
+        /// Note : The name of the file will be automatically extracted.
+        /// </summary>
+        public GBase(string p) {
+            this.path = p;
+            name = Utilities.splitNamePath(this.path);
+        }
     }
 }
