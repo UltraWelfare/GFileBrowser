@@ -22,11 +22,13 @@ public class BrowserFile : Browser {
     /// Reloads the file content view.
     /// You can optionally pass if you want to add the current navigated path to the stack.
     /// </summary>
-    public override void Reload(string path, bool addToStack) {
+    public void Reload(string path, bool addToStack) {
         try {
             List<GBase> files = EnvGrabber.returnFiles(path);
             List<GBase> folders = EnvGrabber.returnFolders(path);
-            if(addToStack) { stack.Add(path); }
+            if (addToStack && !(stack.Exists((String str) => { return str.Equals(path); }))) {
+                stack.Add(path);
+            }
             ui.UpdatePathField(path);
             CurrentSelectedFile = null;
             Clear((item) => { components.Remove(item.GetComponent<GComponent>()); });

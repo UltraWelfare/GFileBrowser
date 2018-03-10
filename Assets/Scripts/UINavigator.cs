@@ -78,7 +78,7 @@ public class UINavigator {
     }
 
     void onRedirect() {
-        brf.Reload(pathField.text);
+        brf.Reload(pathField.text, true);
     }
 
     //----Other UI Calls----//

@@ -20,11 +20,9 @@ public abstract class Browser {
     }
 
     /// <summary>
-    /// Reloads the contents. At least one function should be implemented.
+    /// Reloads the contents.
     /// </summary>
     public abstract void Reload();
-    public virtual void Reload(string path) { throw new NotSupportedException(); }
-    public virtual void Reload(string path, bool addToStack) { throw new NotSupportedException(); }
 
     /// <summary>
     /// Destroys all the objects inside the content view.
