@@ -11,13 +11,13 @@ namespace GFB {
     public abstract class Browser {
         GameObject prefab;
         RectTransform rectTransform;
-        protected UINavigator ui;
+        protected MainController controller;
         protected Transform contentView;
 
-        public Browser(Transform contentView, GameObject prefab, UINavigator ui) {
+        public Browser(Transform contentView, GameObject prefab, MainController controller) {
             this.contentView = contentView;
             rectTransform = this.contentView.GetComponent<RectTransform>();
-            this.ui = ui;
+            this.controller = controller;
         }
 
         /// <summary>

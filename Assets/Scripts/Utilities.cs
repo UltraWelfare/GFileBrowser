@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System;
+using UnityEngine.EventSystems;
 
 public static class Utilities {
     public static readonly float panelHeight = 35.9f;
@@ -33,6 +34,15 @@ public static class Utilities {
     /// </summary>
     public static string fixSlashes(this string str) {
         return str.Replace("\\", "/");
+    }
+    
+    /// <summary>
+    /// Check if the UIClickListener type is the same as a PointerEventData inputbutton
+    /// </summary>
+    public static bool EqualsToUIType(this UIClickListener.Type t, PointerEventData.InputButton ib){
+        if(ib == PointerEventData.InputButton.Left && t == UIClickListener.Type.LeftClick) { return true; }
+        if(ib == PointerEventData.InputButton.Right && t == UIClickListener.Type.RightClick) { return true; }
+        return false;
     }
 }
 

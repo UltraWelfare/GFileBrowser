@@ -4,28 +4,42 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using UnityEngine.EventSystems;
 
 namespace GFB {
     public class UINavigator {
-        GameObject fb;
-        Button backButton, doneButton, redirectButton;
+
+        //----UI Components----//
         InputField pathField;
-        BrowserFile brf;
-        BrowserDrive brd;
-        Color32 selectedColor = new Color32(0, 0, 255, 100);
-        Color32 normalColor = new Color32(255, 255, 255, 100);
         Text errorDisplayText;
 
-        public UINavigator(GameObject fileBrowserRoot) {
-            this.fb = fileBrowserRoot;
-            pathField = fb.transform.Find("PathField").GetComponent<InputField>();
-            errorDisplayText = fb.transform.Find("ErrorDisplayText").GetComponent<Text>();
-            setupButtons();
-        }
+        //----Classes----//
+        BrowserFile brf;
+        BrowserDrive brd;
 
-        public void PassBrowser(BrowserFile browserFile, BrowserDrive browserDrive) {
+        //----Colors----/
+        Color32 selectedColor = new Color32(0, 0, 255, 100);
+        Color32 normalColor = new Color32(255, 255, 255, 100);
+
+        public UINavigator(GameObject fb, BrowserFile browserFile, BrowserDrive browserDrive) {
             this.brf = browserFile;
             this.brd = browserDrive;
+            pathField = fb.transform.Find("PathField").GetComponent<InputField>();
+            errorDisplayText = fb.transform.Find("ErrorDisplayText").GetComponent<Text>();
+        }
+
+        //----UI Responses----//
+
+        void setSelected(GComponent gComponent, bool selected) {
+            if (selected) {
+                gComponent.gameObject.GetComponent<Image>().color = selectedColor;
+            } else {
+                gComponent.gameObject.GetComponent<Image>().color = normalColor;
+            }
+        }
+
+        public void UpdatePathField(string path) {
+            pathField.text = path;
         }
 
         public void DisplayError(Exception e) {
@@ -44,65 +58,34 @@ namespace GFB {
             errorDisplayText.text = tmp;
         }
 
-        public void UpdatePathField(string path) {
-            pathField.text = path;
-        }
+        //----UI Calls----//
 
-        void setupButtons() {
-            backButton = fb.transform.Find("BackButton").GetComponent<Button>();
-            doneButton = fb.transform.Find("DoneButton").GetComponent<Button>();
-            redirectButton = fb.transform.Find("RedirectButton").GetComponent<Button>();
-            backButton.GetComponent<Button>().onClick.AddListener(onBack);
-            doneButton.GetComponent<Button>().onClick.AddListener(onDone);
-            redirectButton.GetComponent<Button>().onClick.AddListener(onRedirect);
-        }
-
-        //----UI Responses----//
-
-        void setSelected(GComponent gComponent, bool selected) {
-            if (selected) {
-                gComponent.gameObject.GetComponent<Image>().color = selectedColor;
-            } else {
-                gComponent.gameObject.GetComponent<Image>().color = normalColor;
-            }
-        }
-
-        //----Button Calls----//
-
-        void onBack() {
+        public void onBack() {
             brf.GoBack();
         }
 
-        void onDone() {
+        public void onDone() {
             GFileBrowser.onFileSelected(brf.CurrentSelectedFile);
             GFileBrowser.HideDialog();
         }
 
-        void onRedirect() {
+        public void onRedirect() {
             brf.Reload(pathField.text, true);
         }
 
-        //----Other UI Calls----//
-
-        public void onBasePanelClick(GComponent g) {
-            if (g.Type == typeof(GFolder)) {
-                onFolderClicked(g);
-            } else if (g.Type == typeof(GFile)) {
-                onFileClicked(g);
-            } else if (g.Type == typeof(GDrive)) {
-                onDriveClicked(g);
-            }
-        }
-
-        private void onDriveClicked(GComponent g) {
+        public void onDriveClicked(GComponent g) {
             brf.Reload(g.Holder.Path, true);
         }
 
-        private void onFolderClicked(GComponent g) {
+        public void onFolderLeftClicked(GComponent g) {
             brf.Reload(g.Holder.Path, true);
         }
 
-        private void onFileClicked(GComponent g) {
+        public void onFolderRightClicked(GComponent g) {
+
+        }
+
+        public void onFileLeftClicked(GComponent g) {
             if (g.Holder.Equals(brf.CurrentSelectedFile)) {
                 setSelected(g, false);
                 brf.CurrentSelectedFile = null;
@@ -117,6 +100,10 @@ namespace GFB {
                 });
 
             }
+        }
+
+        public void onFileRightClicked(GComponent g) {
+
         }
     }
 }

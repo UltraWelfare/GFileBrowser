@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System;
 using GFB;
-public class GComponent : MonoBehaviour, IPointerClickHandler {
+public class GComponent : MonoBehaviour {
 
     GBase holder;
     Type type;
@@ -12,15 +12,10 @@ public class GComponent : MonoBehaviour, IPointerClickHandler {
     public GBase Holder { get { return holder; } }
 
 
-    public void Load(GBase b, UINavigator ui) { 
+    public void Load(GBase b) { 
         this.holder = b;
         type = b.GetType();
-        this.ui = ui;
         ReloadUI();
-    }
-
-    public void OnPointerClick(PointerEventData eventData) {
-        ui.onBasePanelClick(this);
     }
 
     public void ReloadUI(bool reloadText = true, bool reloadTexture = true) {

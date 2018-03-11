@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace GFB {
     public class BrowserFile : Browser {
-        public BrowserFile(Transform contentView, GameObject prefab, UINavigator ui) : base(contentView, prefab, ui) { }
+        public BrowserFile(Transform contentView, GameObject prefab, MainController controller) : base(contentView, prefab, controller) { }
 
         public GBase CurrentSelectedFile;
 
@@ -30,7 +31,7 @@ namespace GFB {
                 if (addToStack && !(stack.Exists((String str) => { return str.Equals(path); }))) {
                     stack.Add(path);
                 }
-                ui.UpdatePathField(path);
+                controller.getUI.UpdatePathField(path);
                 CurrentSelectedFile = null;
                 Clear((item) => { components.Remove(item.GetComponent<GComponent>()); });
                 switch (GFileBrowser.FileOrder) {
@@ -45,7 +46,7 @@ namespace GFB {
                 }
                 recalculateContentSize(files.Count + folders.Count);
             } catch (Exception e) {
-                ui.DisplayError(e);
+                controller.getUI.DisplayError(e);
             }
         }
 
@@ -62,8 +63,18 @@ namespace GFB {
 
 
         void addToComponents(GBase b, GameObject go) {
-            components.Add(go.GetComponent<GComponent>());
-            go.GetComponent<GComponent>().Load(b, ui);
+            GComponent com = go.GetComponent<GComponent>();
+            components.Add(com);
+            com.Load(b);
+            if(com.Type == typeof(GFile)){
+                go.GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, () => { 
+                    controller.getUI.onFileLeftClicked(com);
+                });
+            } else if(com.Type == typeof(GFolder)){
+                go.GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, () => { 
+                    controller.getUI.onFolderLeftClicked(com);
+                });
+            }
         }
     }
 }
