@@ -66,12 +66,12 @@ namespace GFB {
             GComponent com = go.GetComponent<GComponent>();
             components.Add(com);
             com.Load(b);
-            if(com.Type == typeof(GFile)){
-                go.GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, () => { 
+            if (com.Type == typeof(GFile)) {
+                go.GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, () => {
                     controller.getUI.onFileLeftClicked(com);
                 });
-            } else if(com.Type == typeof(GFolder)){
-                go.GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, () => { 
+            } else if (com.Type == typeof(GFolder)) {
+                go.GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, () => {
                     controller.getUI.onFolderLeftClicked(com);
                 });
             }

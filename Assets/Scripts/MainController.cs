@@ -6,7 +6,6 @@ namespace GFB {
     public class MainController {
         BrowserFile brf;
         BrowserDrive brd;
-        ContextMenu ctm;
         UINavigator ui;
 
         public GameObject fb;
@@ -31,17 +30,21 @@ namespace GFB {
             fb = GameObject.Instantiate(GFileBrowser.Resources.fileBrowserPrefab, parent.transform, false);
             fileScrollView = fb.transform.Find("FileScrollView").Find("Viewport").Find("Content").gameObject;
             driveScrollView = fb.transform.Find("DriveScrollView").Find("Viewport").Find("Content").gameObject;
-            
+
             brf = new BrowserFile(fileScrollView.transform, GFileBrowser.Resources.basePrefab, this);
             brd = new BrowserDrive(driveScrollView.transform, GFileBrowser.Resources.basePrefab, this);
             ui = new UINavigator(fb, brf, brd);
 
-            fb.transform.Find("DoneButton").GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, ui.onDone);
-            fb.transform.Find("BackButton").GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, ui.onBack);
-            fb.transform.Find("RedirectButton").GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, ui.onRedirect);
+            fb.transform.Find("DoneButton").GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, ui.onDone);
+            fb.transform.Find("BackButton").GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, ui.onBack);
+            fb.transform.Find("RedirectButton").GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, ui.onRedirect);
+            if (GFileBrowser.IsMoveable) {
+                fb.AddComponent<UIWindowMoveable>().setCanvas(parent);
+                fb.GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, fb.GetComponent<UIWindowMoveable>().StartDragging);
+                fb.GetComponent<UIClickListener>().AddUpListener(UIClickListener.Type.LeftClick, fb.GetComponent<UIWindowMoveable>().StopDragging);
+            }
             fb.SetActive(false); // ShowDialog has not been called only init, so we need to hide the UI from the user.
         }
-
 
         public void Show(string rootToShow) {
             fb.SetActive(true);

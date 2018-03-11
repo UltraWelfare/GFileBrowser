@@ -18,7 +18,7 @@ namespace GFB {
                 Clear();
                 inst(drives, (b, go) => {
                     go.GetComponent<GComponent>().Load(b);
-                    go.GetComponent<UIClickListener>().AddListener(UIClickListener.Type.LeftClick, () => {
+                    go.GetComponent<UIClickListener>().AddDownListener(UIClickListener.Type.LeftClick, () => {
                         controller.getUI.onDriveClicked(go.GetComponent<GComponent>());
                     });
                 });

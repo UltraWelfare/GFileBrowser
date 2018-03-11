@@ -8,10 +8,15 @@ namespace GFB {
         static MainController Controller;
 
         /// <summary>
+        /// Determines whether the file-browser window can be moved from the user or not
+        /// </summary>
+        static bool isMoveable = true;
+        public static bool IsMoveable { get { return isMoveable; } set { isMoveable = value; } }
+
+        /// <summary>
         /// is called when a file is selected and the user hits 'Done'. Returns the file selected
         /// </summary>
         public static Action<GBase> onFileSelected;
-
         static Order order = Order.FirstFolders;
 
         /// <summary>
@@ -23,7 +28,7 @@ namespace GFB {
         { "hiberfil.sys", "System Volume Information", "Recovery", "ProgramData", "bootmgr", "BOOTNXT",
         "BOOTSECT.BAK", "Boot", "pagefile.sys", "setup.log", "swapfile.sys", "$RECYCLE.BIN", "Documents and Settings" };
         public static List<string> IgnoreList { get { return ignoreList; } }
-        
+
         /// <summary>
         /// First function to call in order to init the GFileBrowser.
         /// </summary>

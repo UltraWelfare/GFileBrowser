@@ -7,6 +7,7 @@ public class TEST : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        GFileBrowser.IsMoveable = true; // Should be placed before init
         GFileBrowser.Init(canv);
         GFileBrowser.ShowDialog("C:/");
         GFileBrowser.onFileSelected = onFile;
@@ -14,11 +15,5 @@ public class TEST : MonoBehaviour
     
     void onFile(GBase file){
         Debug.Log(file.Name);
-    }
-    
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }
